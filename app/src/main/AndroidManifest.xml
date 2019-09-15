@@ -17,7 +17,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ActivityA"
+            android:name=".ActivityNote"
             android:parentActivityName=".MainActivity" />
         <activity
             android:name=".ActivityB"

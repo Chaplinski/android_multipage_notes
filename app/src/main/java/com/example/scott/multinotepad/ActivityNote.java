@@ -3,24 +3,31 @@ package com.example.scott.multinotepad;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Menu;
 import android.widget.TextView;
 
-public class ActivityA extends AppCompatActivity {
+public class ActivityNote extends AppCompatActivity {
 
     // Set parentActivityName in Manifest!!
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.a_activity);
+        setContentView(R.layout.note_activity);
 
-        TextView textView = findViewById(R.id.activityLabel);
+        TextView textView = findViewById(R.id.textView1);
 
         Intent intent = getIntent();
         if (intent.hasExtra("Activity Title")) {
             String text = intent.getStringExtra("Activity Title");
-            textView.setText("ActivityA\nOpened from " + text);
+            textView.setText("ActivityNote\nOpened from " + text);
         }
 
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.note_activity_menu, menu);
+        return true;
     }
 }

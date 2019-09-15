@@ -4,15 +4,14 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/menuA"
-        android:icon="@android:drawable/stat_notify_error"
-        android:title="Do A"
-        app:showAsAction="always" />
-
-    <item
-        android:id="@+id/menuB"
+        android:id="@+id/menuViewAppDetails"
         android:icon="@android:drawable/stat_notify_error"
         android:title="Do B"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/menuCreateANote"
+        android:icon="@android:drawable/stat_notify_error"
+        android:title="Do A"
         app:showAsAction="always" />
 
 
