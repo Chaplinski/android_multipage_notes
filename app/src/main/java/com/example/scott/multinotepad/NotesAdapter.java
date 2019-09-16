@@ -42,7 +42,7 @@ public class NotesAdapter extends RecyclerView.Adapter<MyViewHolder> {
         Note employee = noteList.get(position);
 
         holder.name.setText(employee.getName());
-        holder.department.setText(employee.getDepartment());
+        holder.body.setText(employee.getBody());
         holder.dateTime.setText(new Date().toString());
     }
 

@@ -15,6 +15,7 @@ public class ActivityNote extends AppCompatActivity {
 
     private TextView title;
     private TextView body;
+    private String[] aValues = new String[5];
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,10 +48,12 @@ public class ActivityNote extends AppCompatActivity {
 
         switch (item.getItemId()) {
             case R.id.saveNote:
+                aValues[0] = title.getText().toString();
+                aValues[1] = body.getText().toString();
+
                 Toast.makeText(this, "You have saved your note", Toast.LENGTH_SHORT).show();
                 Intent intentNoteCreation = new Intent(this, MainActivity.class);
-                intentNoteCreation.putExtra("Note Title", "Title coming from Note View");
-                intentNoteCreation.putExtra("Note Body", "Body coming from Note View");
+                intentNoteCreation.putExtra("Note Array", aValues);
 
                 startActivity(intentNoteCreation);
                 return true;

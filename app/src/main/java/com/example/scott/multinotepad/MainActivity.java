@@ -12,7 +12,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity
@@ -22,10 +27,13 @@ public class MainActivity extends AppCompatActivity
     private static final String TAG = "MainActivity";
 
     private final List<Note> noteList = new ArrayList<>();  // Main content is here
+    private final List<String> stringList = new ArrayList<>();  // Main content is here
 
     private RecyclerView recyclerView; // Layout's recyclerview
 
     private NotesAdapter mAdapter; // Data to recyclerview adapter
+    private String[] aValues = new String[5];
+    private JSONObject allNotesJSON = new JSONObject();
 //    private TextView userText;
 //    private TextView textView;
 
@@ -42,17 +50,20 @@ public class MainActivity extends AppCompatActivity
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         Intent intent = getIntent();
-        if (intent.hasExtra("Note Title")) {
-            String title = intent.getStringExtra("Note Title");
-            String body = intent.getStringExtra("Note Body");
-            Log.d(TAG, "titlePassedBack: " + title);
-            Log.d(TAG, "bodyPassedBack: " + body);
+        if (intent.hasExtra("Note Array")) {
+            aValues = intent.getStringArrayExtra("Note Array");
+            JSONArray mJSONArray = new JSONArray(Arrays.asList(aValues));
+            //allNotesJSON.put("test", mJSONArray);
+            Log.d(TAG, "titlePassedBack: " + mJSONArray);
 
         }
 
         //Make some data - not always needed - used to fill list
         for (int i = 0; i < 20; i++) {
-            noteList.add(new Note());
+            Note note = new Note();
+            note.setName("goofus name");
+            note.setBody("Gallant body");
+            noteList.add(note);
         }
 
     }
@@ -67,7 +78,7 @@ public class MainActivity extends AppCompatActivity
         Toast.makeText(v.getContext(), "SHORT " + m.toString(), Toast.LENGTH_SHORT).show();
         Intent intentNoteCreation = new Intent(MainActivity.this, ActivityNote.class);
         intentNoteCreation.putExtra("Note Title", "This is the title of the note");
-        intentNoteCreation.putExtra("Note Body", "This is the body of the noteThis is the body of the noteThis is the body of the noteThis is the body of the noteThis is the body of the noteThis is the body of the noteThis is the body of the noteThis is the body of the noteThis is the body of the noteThis is the body of the note");
+        intentNoteCreation.putExtra("Note Body", "This is the body of the note");
         startActivityForResult(intentNoteCreation, SAVE_NOTE_REQUEST_CODE);
         Log.d(TAG, "onActivityResult: User Text: " + SAVE_NOTE_REQUEST_CODE);
     }

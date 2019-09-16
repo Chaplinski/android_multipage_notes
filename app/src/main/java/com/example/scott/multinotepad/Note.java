@@ -3,13 +3,13 @@ package com.example.scott.multinotepad;
 public class Note {
 
     private String name;
-    private String department;
+    private String body;
 
-    private static int ctr = 1;
+    private static int ctr = 0;
 
     public Note() {
         this.name = "Note Name " + ctr;
-        this.department = "Department " + ctr;
+        this.body = "Department " + ctr;
         ctr++;
     }
 
@@ -17,11 +17,21 @@ public class Note {
         return name;
     }
 
-
-
-    public String getDepartment() {
-        return department;
+    public String setName(String newName) {
+        this.name = newName + " " + ctr;
+        return this.name;
     }
+
+    public String getBody() {
+        return body;
+    }
+
+    public String setBody(String newBody) {
+        this.body = newBody;
+        return this.body;
+    }
+
+
 
 //    @Override
 //    public String toString() {
