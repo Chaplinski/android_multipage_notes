@@ -41,14 +41,19 @@ public class MainActivity extends AppCompatActivity
         recyclerView.setAdapter(mAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
+        Intent intent = getIntent();
+        if (intent.hasExtra("Note Title")) {
+            String title = intent.getStringExtra("Note Title");
+            String body = intent.getStringExtra("Note Body");
+            Log.d(TAG, "titlePassedBack: " + title);
+            Log.d(TAG, "bodyPassedBack: " + body);
+
+        }
+
         //Make some data - not always needed - used to fill list
         for (int i = 0; i < 20; i++) {
             noteList.add(new Note());
         }
-
-        Log.d(TAG, "onCreate: " + noteList.get(0));
-
-//        userText = findViewById(R.id.userText);
 
     }
 

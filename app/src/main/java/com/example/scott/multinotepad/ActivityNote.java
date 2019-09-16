@@ -49,6 +49,9 @@ public class ActivityNote extends AppCompatActivity {
             case R.id.saveNote:
                 Toast.makeText(this, "You have saved your note", Toast.LENGTH_SHORT).show();
                 Intent intentNoteCreation = new Intent(this, MainActivity.class);
+                intentNoteCreation.putExtra("Note Title", "Title coming from Note View");
+                intentNoteCreation.putExtra("Note Body", "Body coming from Note View");
+
                 startActivity(intentNoteCreation);
                 return true;
             default:
