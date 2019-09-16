@@ -4,7 +4,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/menuB"
+        android:id="@+id/saveNote"
         android:icon="@android:drawable/ic_menu_save"
         android:title="Save Note"
         app:showAsAction="always" />

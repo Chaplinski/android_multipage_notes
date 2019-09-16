@@ -10,7 +10,7 @@
         app:showAsAction="always" />
     <item
         android:id="@+id/menuCreateANote"
-        android:icon="@android:drawable/stat_notify_error"
+        android:icon="@android:drawable/ic_menu_add"
         android:title="Do A"
         app:showAsAction="always" />
 

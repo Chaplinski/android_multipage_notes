@@ -22,6 +22,7 @@ public class ActivityB extends AppCompatActivity {
         getSupportActionBar().hide();
         setContentView(R.layout.b_activity);
 
+
     }
 
 

@@ -3,12 +3,13 @@ package com.example.scott.multinotepad;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.DialogTitle;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -20,11 +21,11 @@ public class MainActivity extends AppCompatActivity
     private static final int SAVE_NOTE_REQUEST_CODE = 101;
     private static final String TAG = "MainActivity";
 
-    private final List<Employee> employeeList = new ArrayList<>();  // Main content is here
+    private final List<Note> noteList = new ArrayList<>();  // Main content is here
 
     private RecyclerView recyclerView; // Layout's recyclerview
 
-    private EmployeesAdapter mAdapter; // Data to recyclerview adapter
+    private NotesAdapter mAdapter; // Data to recyclerview adapter
 //    private TextView userText;
 //    private TextView textView;
 
@@ -32,6 +33,20 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        recyclerView = findViewById(R.id.recycler);
+
+        mAdapter = new NotesAdapter(noteList, this);
+
+        recyclerView.setAdapter(mAdapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        //Make some data - not always needed - used to fill list
+        for (int i = 0; i < 20; i++) {
+            noteList.add(new Note());
+        }
+
+        Log.d(TAG, "onCreate: " + noteList.get(0));
 
 //        userText = findViewById(R.id.userText);
 
@@ -42,9 +57,22 @@ public class MainActivity extends AppCompatActivity
     public void onClick(View v) {  // click listener called by ViewHolder clicks
 
         int pos = recyclerView.getChildLayoutPosition(v);
-        Employee m = employeeList.get(pos);
+        Note m = noteList.get(pos);
 
         Toast.makeText(v.getContext(), "SHORT " + m.toString(), Toast.LENGTH_SHORT).show();
+        Intent intentNoteCreation = new Intent(MainActivity.this, ActivityNote.class);
+        intentNoteCreation.putExtra("Note Title", "This is the title of the note");
+        intentNoteCreation.putExtra("Note Body", "This is the body of the noteThis is the body of the noteThis is the body of the noteThis is the body of the noteThis is the body of the noteThis is the body of the noteThis is the body of the noteThis is the body of the noteThis is the body of the noteThis is the body of the note");
+        startActivityForResult(intentNoteCreation, SAVE_NOTE_REQUEST_CODE);
+        Log.d(TAG, "onActivityResult: User Text: " + SAVE_NOTE_REQUEST_CODE);
+    }
+
+    // From OnLongClickListener
+    @Override
+    public boolean onLongClick(View v) {  // long click listener called by ViewHolder long clicks
+        // use this method to delete a note
+
+        return false;
     }
 
     @Override
