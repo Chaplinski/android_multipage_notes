@@ -31,7 +31,7 @@ public class Note {
     public String getDate() { return date; }
 
     public void setDate(String newDate){
-        DateFormat df = new SimpleDateFormat("EEE MMM d, HH:mm a");
+        DateFormat df = new SimpleDateFormat("EEE MMM d, hh:mm a");
         Date dateobj = new Date();
         String dateString = df.format(dateobj);
         Log.d("scooter", "setDate: " + dateString);

@@ -39,11 +39,11 @@ public class NotesAdapter extends RecyclerView.Adapter<MyViewHolder> {
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
         Log.d(TAG, "onBindViewHolder: FILLING VIEW HOLDER Note " + position);
 
-        Note employee = noteList.get(position);
+        Note note = noteList.get(position);
 
-        holder.name.setText(employee.getTitle());
-        holder.body.setText(employee.getBody());
-        holder.dateTime.setText(new Date().toString());
+        holder.name.setText(note.getTitle());
+        holder.body.setText(note.getBody());
+        holder.dateTime.setText(note.getDate());
     }
 
     @Override

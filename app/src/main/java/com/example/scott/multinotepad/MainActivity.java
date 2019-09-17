@@ -18,7 +18,11 @@ import android.widget.Toast;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.StringWriter;
 import java.lang.reflect.Array;
@@ -34,6 +38,8 @@ public class MainActivity extends AppCompatActivity
     private final List<Note> noteList = new ArrayList<>();  // Main content is here
     private RecyclerView recyclerView; // Layout's recyclerview
     private NotesAdapter mAdapter; // Data to recyclerview adapter
+    private Note note = new Note();
+
 
 //    private EditText title;
 //    private EditText body;
@@ -54,14 +60,49 @@ public class MainActivity extends AppCompatActivity
         recyclerView.setAdapter(mAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
+        this.loadFile();
+
         //Make some data - not always needed - used to fill list
         for (int i = 0; i < 20; i++) {
-            Note note = new Note();
-            note.setTitle("goofus name");
-            note.setBody("Gallant body");
             noteList.add(note);
         }
 
+    }
+
+    private Note loadFile() {
+
+        Log.d(TAG, "loadFile: Loading JSON File");
+        note = new Note();
+        try {
+            InputStream is = getApplicationContext().
+                    openFileInput(getString(R.string.file_name));
+
+            BufferedReader reader = new BufferedReader(new InputStreamReader(is, "UTF-8"));
+
+            StringBuilder sb = new StringBuilder();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                sb.append(line);
+            }
+
+            JSONObject jsonObject = new JSONObject(sb.toString());
+            String title = jsonObject.getString("title");
+            String body = jsonObject.getString("body");
+            String date = jsonObject.getString("date");
+            note.setTitle(title);
+            note.setBody(body);
+            note.setDate(date);
+            Log.d(TAG, "loadFile title: " + title);
+            Log.d(TAG, "loadFile body: " + body);
+            Log.d(TAG, "loadFile date: " + date);
+
+
+        } catch (FileNotFoundException e) {
+            Toast.makeText(this, getString(R.string.no_file), Toast.LENGTH_SHORT).show();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return note;
     }
 
     // From OnClickListener
