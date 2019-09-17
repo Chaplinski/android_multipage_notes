@@ -1,20 +1,26 @@
 package com.example.scott.multinotepad;
 
+import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DialogTitle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.JsonWriter;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.FileOutputStream;
+import java.io.OutputStreamWriter;
+import java.io.StringWriter;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -25,15 +31,12 @@ public class MainActivity extends AppCompatActivity
 
     private static final int SAVE_NOTE_REQUEST_CODE = 101;
     private static final String TAG = "MainActivity";
-
     private final List<Note> noteList = new ArrayList<>();  // Main content is here
-    private final List<String> stringList = new ArrayList<>();  // Main content is here
-
     private RecyclerView recyclerView; // Layout's recyclerview
-
     private NotesAdapter mAdapter; // Data to recyclerview adapter
-    private String[] aValues = new String[5];
-    private JSONObject allNotesJSON = new JSONObject();
+
+//    private EditText title;
+//    private EditText body;
 //    private TextView userText;
 //    private TextView textView;
 
@@ -41,6 +44,8 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+//        title = findViewById(R.id.textTitle);
+//        body = findViewById(R.id.textBody);
 
         recyclerView = findViewById(R.id.recycler);
 
@@ -49,19 +54,10 @@ public class MainActivity extends AppCompatActivity
         recyclerView.setAdapter(mAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        Intent intent = getIntent();
-        if (intent.hasExtra("Note Array")) {
-            aValues = intent.getStringArrayExtra("Note Array");
-            JSONArray mJSONArray = new JSONArray(Arrays.asList(aValues));
-            //allNotesJSON.put("test", mJSONArray);
-            Log.d(TAG, "titlePassedBack: " + mJSONArray);
-
-        }
-
         //Make some data - not always needed - used to fill list
         for (int i = 0; i < 20; i++) {
             Note note = new Note();
-            note.setName("goofus name");
+            note.setTitle("goofus name");
             note.setBody("Gallant body");
             noteList.add(note);
         }
@@ -75,10 +71,10 @@ public class MainActivity extends AppCompatActivity
         int pos = recyclerView.getChildLayoutPosition(v);
         Note m = noteList.get(pos);
 
-        Toast.makeText(v.getContext(), "SHORT " + m.toString(), Toast.LENGTH_SHORT).show();
+        //Toast.makeText(v.getContext(), "SHORT " + m.toString(), Toast.LENGTH_SHORT).show();
         Intent intentNoteCreation = new Intent(MainActivity.this, ActivityNote.class);
-        intentNoteCreation.putExtra("Note Title", "This is the title of the note");
-        intentNoteCreation.putExtra("Note Body", "This is the body of the note");
+//        intentNoteCreation.putExtra("Note Title", "This is the title of the note");
+//        intentNoteCreation.putExtra("Note Body", "This is the body of the note");
         startActivityForResult(intentNoteCreation, SAVE_NOTE_REQUEST_CODE);
         Log.d(TAG, "onActivityResult: User Text: " + SAVE_NOTE_REQUEST_CODE);
     }
@@ -134,6 +130,37 @@ public class MainActivity extends AppCompatActivity
             Log.d(TAG, "onActivityResult: Request Code " + requestCode);
         }
     }
+
+//    @Override
+//    protected void onPause() {
+//        note.setTitle(title.getText().toString());
+////        note.setBody(body.getText().toString());
+//        saveNote();
+//
+//        super.onPause();
+//    }
+//
+//    private void saveNote() {
+//
+//        Log.d(TAG, "saveNote: Saving JSON File");
+//        try {
+//            FileOutputStream fos = getApplicationContext().
+//                    openFileOutput(getString(R.string.file_name), Context.MODE_PRIVATE);
+//
+//            JsonWriter writer = new JsonWriter(new OutputStreamWriter(fos, getString(R.string.encoding)));
+//            writer.setIndent("  ");
+//            writer.beginObject();
+//            writer.name("title").value(note.getTitle());
+//            writer.name("description").value(note.getBody());
+//            writer.endObject();
+//            writer.close();
+//
+//
+//            Toast.makeText(this, getString(R.string.saved), Toast.LENGTH_SHORT).show();
+//        } catch (Exception e) {
+//            e.getStackTrace();
+//        }
+//    }
 
 
 }
