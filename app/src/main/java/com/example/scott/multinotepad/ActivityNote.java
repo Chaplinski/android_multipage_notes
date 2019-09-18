@@ -12,6 +12,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -20,6 +21,10 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.util.ArrayList;
+import java.util.Arrays;
+
+import static android.text.TextUtils.isEmpty;
 
 public class ActivityNote extends AppCompatActivity {
 
@@ -135,27 +140,40 @@ public class ActivityNote extends AppCompatActivity {
 
     private void saveNote() {
 
-        Log.d(TAG, "saveNote: Saving JSON File");
-        Log.d(TAG, "saveNote title: " + note.getTitle());
-        Log.d(TAG, "saveNote body: " + note.getBody());
-        Log.d(TAG, "saveNote date: " + note.getDate());
-        try {
-            FileOutputStream fos = getApplicationContext().
-                    openFileOutput(getString(R.string.file_name), Context.MODE_PRIVATE);
+        if(!isEmpty(note.getTitle())) {
 
-            JsonWriter writer = new JsonWriter(new OutputStreamWriter(fos, getString(R.string.encoding)));
-            writer.setIndent("  ");
-            writer.beginObject();
-            writer.name("title").value(note.getTitle());
-            writer.name("body").value(note.getBody());
-            writer.name("date").value(note.getDate());
-            writer.endObject();
-            writer.close();
+            Log.d(TAG, "saveNote: Saving JSON File");
+            Log.d(TAG, "saveNote title: " + note.getTitle());
+            Log.d(TAG, "saveNote body: " + note.getBody());
+            Log.d(TAG, "saveNote date: " + note.getDate());
+            try {
+                FileOutputStream fos = getApplicationContext().
+                        openFileOutput(getString(R.string.file_name), Context.MODE_PRIVATE);
+
+    //            ArrayList<String> foo = new ArrayList<String>();
+    //            foo.add(note.getTitle());
+    //            foo.add(note.getBody());
+    //            foo.add(note.getDate());
+    //            JSONArray mJSONArray = new JSONArray(foo);
+
+                JsonWriter writer = new JsonWriter(new OutputStreamWriter(fos, getString(R.string.encoding)));
+                writer.setIndent("  ");
+                writer.beginObject();
+                writer.name("title").value(note.getTitle());
+                writer.name("body").value(note.getBody());
+                writer.name("date").value(note.getDate());
+                Log.d(TAG, "saveNote: " + writer);
+                writer.endObject();
+                writer.close();
 
 
-            Toast.makeText(this, getString(R.string.saved), Toast.LENGTH_SHORT).show();
-        } catch (Exception e) {
-            e.getStackTrace();
+
+                Toast.makeText(this, getString(R.string.saved), Toast.LENGTH_SHORT).show();
+            } catch (Exception e) {
+                e.getStackTrace();
+            }
+        } else {
+            Toast.makeText(this, "title is empty, did not save", Toast.LENGTH_SHORT).show();
         }
     }
 }
