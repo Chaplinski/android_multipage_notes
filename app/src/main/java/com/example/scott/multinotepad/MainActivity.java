@@ -52,7 +52,6 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
 //        title = findViewById(R.id.textTitle);
 //        body = findViewById(R.id.textBody);
-
         recyclerView = findViewById(R.id.recycler);
 
         mAdapter = new NotesAdapter(noteList, this);
@@ -63,9 +62,12 @@ public class MainActivity extends AppCompatActivity
         this.loadFile();
 
         //Make some data - not always needed - used to fill list
+        int j = 0;
         for (int i = 0; i < 20; i++) {
             noteList.add(note);
+            j++;
         }
+        setTitle("Multi Notes (" + j + ")");
 
     }
 
