@@ -97,10 +97,9 @@ public class MainActivity extends AppCompatActivity
         noteList.add(newNote);
     }
 
-    private Note loadFile() {
+    private void loadFile() {
 
 //        Log.d(TAG, "loadFile: Loading JSON File");
-        note = new Note();
         try {
             InputStream is = getApplicationContext().
                     openFileInput(getString(R.string.file_name));
@@ -119,8 +118,11 @@ public class MainActivity extends AppCompatActivity
             Log.d(TAG, "JSON number: " + iSavedObjects);
 
             for (int i = 0; i < iSavedObjects; i++) {
+                Note note = new Note();
                 String title = jsonObject.getString("title" + i);
+                Log.d(TAG, "STRING title:" + i + " " + title);
                 String body = jsonObject.getString("body" + i);
+                Log.d(TAG, "STRING body:" + i + " " + body);
                 String date = jsonObject.getString("date" + i);
                 note.setTitle(title);
                 note.setBody(body);
@@ -128,14 +130,11 @@ public class MainActivity extends AppCompatActivity
                 noteList.add(note);
             }
 
-
-
         } catch (FileNotFoundException e) {
             Toast.makeText(this, getString(R.string.no_file), Toast.LENGTH_SHORT).show();
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return note;
     }
 
     // From OnClickListener
@@ -274,10 +273,12 @@ public class MainActivity extends AppCompatActivity
                     noteNumber++;
                 }
             }
-
-            writer.name("title" + noteNumber).value("writer title");
-            writer.name("body" + noteNumber).value("writer body");
-            writer.name("date" + noteNumber).value("writer date - most recently added");
+            if (sTitlePassBack != null) {
+                Log.d(TAG, "passBack: " + sTitlePassBack);
+                writer.name("title" + noteNumber).value(sTitlePassBack);
+                writer.name("body" + noteNumber).value(sBodyPassBack);
+                writer.name("date" + noteNumber).value("writer date - most recently added");
+            }
 
             writer.endObject();
             writer.close();
