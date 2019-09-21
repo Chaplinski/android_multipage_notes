@@ -13,6 +13,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONArray;
@@ -39,10 +40,13 @@ public class MainActivity extends AppCompatActivity
     private RecyclerView recyclerView; // Layout's recyclerview
     private NotesAdapter mAdapter; // Data to recyclerview adapter
     private Note note = new Note();
+    private String sTitlePassBack;
+    private String sBodyPassBack;
+    private String sDatePassBack;
 
 
-//    private EditText title;
-//    private EditText body;
+    private TextView noteTitle;
+    private TextView noteBody;
 //    private TextView userText;
 //    private TextView textView;
 
@@ -59,21 +63,43 @@ public class MainActivity extends AppCompatActivity
         recyclerView.setAdapter(mAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        this.loadFile();
+        Intent intent = getIntent();
 
-        //Make some data - not always needed - used to fill list
-        int j = 0;
-        for (int i = 0; i < 20; i++) {
-            noteList.add(note);
-            j++;
+        if (intent.hasExtra("Title Passback")) {
+            displayNewListItem(intent);
         }
-        setTitle("Multi Notes (" + j + ")");
 
+        this.loadFile();
+//
+////        Make some data - not always needed - used to fill list
+//        int j = 0;
+//        for (int i = 0; i < 20; i++) {
+//            note.setTitle("here is a title");
+//            note.setBody("The body is right here");
+//            note.setDate("");
+//            note.getDate();
+//            noteList.add(note);
+//            j++;
+//        }
+
+        setTitle("Multi Notes (#)");
+
+    }
+
+    private void displayNewListItem(Intent intent) {
+        sTitlePassBack = intent.getStringExtra("Title Passback");
+        sBodyPassBack = intent.getStringExtra("Body Passback");
+        Note newNote = new Note();
+        newNote.setTitle(sTitlePassBack);
+        newNote.setBody(sBodyPassBack);
+        newNote.setDate("");
+        sDatePassBack = newNote.getDate();
+        noteList.add(newNote);
     }
 
     private Note loadFile() {
 
-        Log.d(TAG, "loadFile: Loading JSON File");
+//        Log.d(TAG, "loadFile: Loading JSON File");
         note = new Note();
         try {
             InputStream is = getApplicationContext().
@@ -88,15 +114,20 @@ public class MainActivity extends AppCompatActivity
             }
 
             JSONObject jsonObject = new JSONObject(sb.toString());
-            String title = jsonObject.getString("title");
-            String body = jsonObject.getString("body");
-            String date = jsonObject.getString("date");
-            note.setTitle(title);
-            note.setBody(body);
-            note.setDate(date);
-            Log.d(TAG, "loadFile title: " + title);
-            Log.d(TAG, "loadFile body: " + body);
-            Log.d(TAG, "loadFile date: " + date);
+            int iJsonRows = jsonObject.length();
+            int iSavedObjects = iJsonRows/3;
+            Log.d(TAG, "JSON number: " + iSavedObjects);
+
+            for (int i = 0; i < iSavedObjects; i++) {
+                String title = jsonObject.getString("title" + i);
+                String body = jsonObject.getString("body" + i);
+                String date = jsonObject.getString("date" + i);
+                note.setTitle(title);
+                note.setBody(body);
+                note.setDate(date);
+                noteList.add(note);
+            }
+
 
 
         } catch (FileNotFoundException e) {
@@ -110,14 +141,17 @@ public class MainActivity extends AppCompatActivity
     // From OnClickListener
     @Override
     public void onClick(View v) {  // click listener called by ViewHolder clicks
-
-        int pos = recyclerView.getChildLayoutPosition(v);
-        Note m = noteList.get(pos);
+//        int pos = recyclerView.getChildLayoutPosition(v);
+//        Note m = noteList.get(pos);
+        TextView name = v.findViewById(R.id.name) ;
+        String thisTitle = name. getText().toString();
+        TextView body = v.findViewById(R.id.body) ;
+        String thisBody = body. getText().toString();
 
         //Toast.makeText(v.getContext(), "SHORT " + m.toString(), Toast.LENGTH_SHORT).show();
         Intent intentNoteCreation = new Intent(MainActivity.this, ActivityNote.class);
-//        intentNoteCreation.putExtra("Note Title", "This is the title of the note");
-//        intentNoteCreation.putExtra("Note Body", "This is the body of the note");
+        intentNoteCreation.putExtra("Note Title", thisTitle);
+        intentNoteCreation.putExtra("Note Body", thisBody);
         startActivityForResult(intentNoteCreation, SAVE_NOTE_REQUEST_CODE);
         Log.d(TAG, "onActivityResult: User Text: " + SAVE_NOTE_REQUEST_CODE);
     }
@@ -141,15 +175,16 @@ public class MainActivity extends AppCompatActivity
 
         switch (item.getItemId()) {
             case R.id.menuCreateANote:
-                Toast.makeText(this, "You want to create a note", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(this, "You want to create a note", Toast.LENGTH_SHORT).show();
                 Intent intentNoteCreation = new Intent(MainActivity.this, ActivityNote.class);
-//                intentA.putExtra("Activity Title", "My Cool Activity");
-               startActivityForResult(intentNoteCreation, SAVE_NOTE_REQUEST_CODE);
+                intentNoteCreation.putExtra("Note Title", "Note title from other activity");
+                intentNoteCreation.putExtra("Note Body", "Note BOOOOOOODY from other activity");
+                startActivityForResult(intentNoteCreation, SAVE_NOTE_REQUEST_CODE);
                 return true;
             case R.id.menuViewAppDetails:
                 Toast.makeText(this, "You want to read about the app", Toast.LENGTH_SHORT).show();
                 Intent intentAppDetails = new Intent(MainActivity.this, ActivityB.class);
-//                intentB.putExtra("Activity Title", "My Cool Activity");
+                intentAppDetails.putExtra("Activity Title", "My Cool Activity");
                 startActivity(intentAppDetails);
                 return true;
             default:
@@ -174,36 +209,95 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-//    @Override
-//    protected void onPause() {
-//        note.setTitle(title.getText().toString());
-////        note.setBody(body.getText().toString());
-//        saveNote();
-//
-//        super.onPause();
-//    }
-//
-//    private void saveNote() {
-//
-//        Log.d(TAG, "saveNote: Saving JSON File");
-//        try {
-//            FileOutputStream fos = getApplicationContext().
-//                    openFileOutput(getString(R.string.file_name), Context.MODE_PRIVATE);
-//
-//            JsonWriter writer = new JsonWriter(new OutputStreamWriter(fos, getString(R.string.encoding)));
+    @Override
+    protected void onPause() {
+        saveNotes();
+        super.onPause();
+    }
+
+    private void saveNotes() {
+        Log.d(TAG, "saveNote: Saving JSON File");
+        try {
+            // read JSON file
+            InputStream is = getApplicationContext().
+                    openFileInput(getString(R.string.file_name));
+            BufferedReader reader = new BufferedReader(new InputStreamReader(is, "UTF-8"));
+            ArrayList<String> allData = new ArrayList<>();
+
+//            iterate over JSON file
+            String line;
+            int lineNumber = 0;
+            while ((line = reader.readLine()) != null) {
+
+                if(!line.contains("{") && !line.contains("}")) {
+
+                    String result;
+                    String line2 = line.substring(line.indexOf(": \"")+1);
+                    String line3 = line2.substring(line2.indexOf("\"")+1);
+                    lineNumber++;
+//                    Log.d(TAG, "fromJSON 1: " + line);
+//                    Log.d(TAG, "fromJSON 2: " + line2);
+//                    Log.d(TAG, "fromJSON 3: " + line3);
+                    //when removing quotes from date a different expression is needed
+                    if (lineNumber % 3 == 0){
+                        result = line3.split("\"")[0];
+//                        Log.d(TAG, "fromJSON final: " + result);
+                    } else {
+                        result = line3.split("\",")[0];
+//                        Log.d(TAG, "fromJSON final: " + result);
+                    }
+                    allData.add(result);
+//                    Log.d(TAG, "fromJSON: " + result);
+                }
+            }
+            Log.d(TAG, "fromJSON allData: " + allData);
+            //now we have all of the data that was held in the JSON file in an ArrayList
+
+
+            FileOutputStream fos = getApplicationContext().
+                    openFileOutput(getString(R.string.file_name), Context.MODE_PRIVATE);
+
+            JsonWriter writer = new JsonWriter(new OutputStreamWriter(fos, getString(R.string.encoding)));
+            writer.setIndent("  ");
+            writer.beginObject();
+
+            //iterate over ArrayList
+
+            int noteNumber = 0;
+            for (int i = 0; i < allData.size(); i++){
+                if(i % 3 == 0){
+                    writer.name("title" + noteNumber).value(allData.get(i));
+                } else if (i % 3 == 1){
+                    writer.name("body" + noteNumber).value(allData.get(i));
+                } else {
+                    writer.name("date" + noteNumber).value(sDatePassBack);
+                    noteNumber++;
+                }
+            }
+
+            writer.name("title" + noteNumber).value("writer title");
+            writer.name("body" + noteNumber).value("writer body");
+            writer.name("date" + noteNumber).value("writer date - most recently added");
+
+            writer.endObject();
+            writer.close();
+
+//            StringWriter sw = new StringWriter();
+//            writer = new JsonWriter(sw);
 //            writer.setIndent("  ");
 //            writer.beginObject();
-//            writer.name("title").value(note.getTitle());
-//            writer.name("description").value(note.getBody());
+//            writer.name("title").value(sTitlePassBack);
+//            writer.name("body").value(sBodyPassBack);
+//            writer.name("date").value(sDatePassBack);
 //            writer.endObject();
 //            writer.close();
-//
-//
-//            Toast.makeText(this, getString(R.string.saved), Toast.LENGTH_SHORT).show();
-//        } catch (Exception e) {
-//            e.getStackTrace();
-//        }
-//    }
+//            Log.d(TAG, "saveProduct: JSON:\n" + sw.toString());
 
+
+            Toast.makeText(this, getString(R.string.saved), Toast.LENGTH_SHORT).show();
+        } catch (Exception e) {
+            e.getStackTrace();
+        }
+    }
 
 }
