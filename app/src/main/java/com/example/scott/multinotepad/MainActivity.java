@@ -77,7 +77,8 @@ public class MainActivity extends AppCompatActivity
         Note newNote = new Note();
         newNote.setTitle(sTitlePassBack);
         newNote.setBody(sBodyPassBack);
-        newNote.setDate(sDatePassBack);
+        String actualDate = newNote.getDateCurrentTimeZone(sDatePassBack);
+        newNote.setDate(actualDate);
         noteList.add(newNote);
         totalNumberOfNotes++;
     }
@@ -115,7 +116,8 @@ public class MainActivity extends AppCompatActivity
 
                 note.setTitle(title);
                 note.setBody(body);
-                note.setDate(date);
+                String actualTime = note.getDateCurrentTimeZone(date);
+                note.setDate(actualTime);
                 noteList.add(note);
                 totalNumberOfNotes++;
             }

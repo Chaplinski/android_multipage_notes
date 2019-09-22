@@ -6,6 +6,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.TimeZone;
 
 public class Note {
 
@@ -35,15 +36,31 @@ public class Note {
     }
 
     public String getCurrentDate(){
-        DateFormat df = new SimpleDateFormat("EEE MMM d, hh:mm a");
-        Date dateobj = new Date();
-        String dateString = df.format(dateobj);
-        Log.d("scooter", "setDate: " + dateString);
-        return dateString;
+//        DateFormat df = new SimpleDateFormat("EEE MMM d, hh:mm a");
+//        Date dateobj = new Date();
+//        String dateString = df.format(dateobj);
+        Long tsLong = System.currentTimeMillis()/1000;
+        String ts = tsLong.toString();
+        return ts;
     }
 
     public String toString() {
         return title + ": " + body;
+    }
+
+    public  String getDateCurrentTimeZone(String timestamp) {
+        Long lTimestamp = Long.parseLong(timestamp);
+        try{
+            Calendar calendar = Calendar.getInstance();
+            TimeZone tz = TimeZone.getDefault();
+            calendar.setTimeInMillis(lTimestamp * 1000);
+            calendar.add(Calendar.MILLISECOND, tz.getOffset(calendar.getTimeInMillis()));
+            SimpleDateFormat sdf = new SimpleDateFormat("EEE MMM d, hh:mm a");
+            Date currentTimeZone = (Date) calendar.getTime();
+            return sdf.format(currentTimeZone);
+        }catch (Exception e) {
+        }
+        return "";
     }
 
 }
