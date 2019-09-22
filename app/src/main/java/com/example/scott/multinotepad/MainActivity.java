@@ -137,7 +137,7 @@ public class MainActivity extends AppCompatActivity
     public void onClick(View v) {  // click listener called by ViewHolder clicks
 //        int pos = recyclerView.getChildLayoutPosition(v);
 //        Note m = noteList.get(pos);
-        TextView name = v.findViewById(R.id.name) ;
+        TextView name = v.findViewById(R.id.name);
         String thisTitle = name. getText().toString();
         TextView body = v.findViewById(R.id.body) ;
         String thisBody = body. getText().toString();
@@ -154,6 +154,9 @@ public class MainActivity extends AppCompatActivity
     @Override
     public boolean onLongClick(View v) {  // long click listener called by ViewHolder long clicks
         // use this method to delete a note
+        TextView name = v.findViewById(R.id.name);
+        String thisTitle = name. getText().toString();
+        Toast.makeText(this, thisTitle, Toast.LENGTH_SHORT).show();
 
         return false;
     }
@@ -253,13 +256,7 @@ public class MainActivity extends AppCompatActivity
             JsonWriter writer = new JsonWriter(new OutputStreamWriter(fos, getString(R.string.encoding)));
             writer.setIndent("  ");
             writer.beginObject();
-
-            //TODO put arraylist in opposite order
-            //this.orderByDate(allData);
-
-
-            //iterate over ArrayList
-
+            int noteNumber = 1;
             if ((sTitlePassBack != null) && (!hasBeenAdded)) {
                 Log.d(TAG, "passBack: " + sTitlePassBack);
                 writer.name("title0").value(sTitlePassBack);
@@ -270,9 +267,11 @@ public class MainActivity extends AppCompatActivity
                 }
                 writer.name("date0").value(sDatePassBack);
                 hasBeenAdded = true;
+            } else {
+                noteNumber = 0;
             }
 
-            int noteNumber = 1;
+            //iterate over ArrayList
             if (jsonFilePresent) {
                 for (int i = 0; i < allData.size(); i++) {
                     if (i % 3 == 0) {
