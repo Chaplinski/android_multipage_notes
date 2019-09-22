@@ -40,6 +40,7 @@ public class MainActivity extends AppCompatActivity
     private boolean jsonFilePresent = false;
     private boolean hasBeenAdded = false;
     private int totalNumberOfNotes = 0;
+    ArrayList newList = new ArrayList();
 
 
     private TextView noteTitle;
@@ -253,9 +254,25 @@ public class MainActivity extends AppCompatActivity
             writer.setIndent("  ");
             writer.beginObject();
 
+            //TODO put arraylist in opposite order
+            //this.orderByDate(allData);
+
+
             //iterate over ArrayList
 
-            int noteNumber = 0;
+            if ((sTitlePassBack != null) && (!hasBeenAdded)) {
+                Log.d(TAG, "passBack: " + sTitlePassBack);
+                writer.name("title0").value(sTitlePassBack);
+                if (!sBodyPassBack.isEmpty()) {
+                    writer.name("body0").value(sBodyPassBack);
+                } else {
+                    writer.name("body0").value(" ");
+                }
+                writer.name("date0").value(sDatePassBack);
+                hasBeenAdded = true;
+            }
+
+            int noteNumber = 1;
             if (jsonFilePresent) {
                 for (int i = 0; i < allData.size(); i++) {
                     if (i % 3 == 0) {
@@ -267,17 +284,6 @@ public class MainActivity extends AppCompatActivity
                         noteNumber++;
                     }
                 }
-            }
-            if ((sTitlePassBack != null) && (!hasBeenAdded)) {
-                Log.d(TAG, "passBack: " + sTitlePassBack);
-                writer.name("title" + noteNumber).value(sTitlePassBack);
-                if (!sBodyPassBack.isEmpty()) {
-                    writer.name("body" + noteNumber).value(sBodyPassBack);
-                } else {
-                    writer.name("body" + noteNumber).value(" ");
-                }
-                writer.name("date" + noteNumber).value(sDatePassBack);
-                hasBeenAdded = true;
             }
 
             writer.endObject();
