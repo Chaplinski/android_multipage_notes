@@ -149,26 +149,37 @@ public class ActivityNote extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        new AlertDialog.Builder(this)
-                .setIcon(android.R.drawable.ic_dialog_alert)
-                .setTitle("Your note is not saved!")
-                .setMessage("Save note (Insert Note Name Here)")
-                .setPositiveButton("Yes", new DialogInterface.OnClickListener()
-                {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        finish();
-                    }
+        String titleText = title.getText().toString();
+        if (titleText.length() > 0) {
+            new AlertDialog.Builder(this)
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .setTitle("Your note is not saved!")
+                    .setMessage("Save note \"" + titleText + "\"?")
+                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            Intent intentNoteCreation = new Intent(ActivityNote.this, MainActivity.class);
+                            String sTitleText = title.getText().toString();
+                            String sBodyText = body.getText().toString();
+                            String sDate = note.getCurrentDate();
+//                    Toast.makeText(this, "You have saved your note", Toast.LENGTH_SHORT).show();
+                            intentNoteCreation.putExtra("Title Passback", sTitleText);
+                            intentNoteCreation.putExtra("Body Passback", sBodyText);
+                            intentNoteCreation.putExtra("Date Passback", sDate);
+                            startActivity(intentNoteCreation);
+                        }
 
-                })
-                .setNegativeButton("No", new DialogInterface.OnClickListener()
-                {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        finish();
-                    }
+                    })
+                    .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            finish();
+                        }
 
-                })
-                .show();
+                    })
+                    .show();
+        } else {
+            super.onBackPressed();
+        }
     }
 }

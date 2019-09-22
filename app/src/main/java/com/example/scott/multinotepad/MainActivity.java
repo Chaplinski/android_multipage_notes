@@ -39,6 +39,7 @@ public class MainActivity extends AppCompatActivity
     private String sDatePassBack;
     private boolean jsonFilePresent = false;
     private boolean hasBeenAdded = false;
+    private int totalNumberOfNotes = 0;
 
 
     private TextView noteTitle;
@@ -64,19 +65,8 @@ public class MainActivity extends AppCompatActivity
         }
 
         this.loadFile();
-//
-////        Make some data - not always needed - used to fill list
-//        int j = 0;
-//        for (int i = 0; i < 20; i++) {
-//            note.setTitle("here is a title");
-//            note.setBody("The body is right here");
-//            note.setDate("");
-//            note.getDate();
-//            noteList.add(note);
-//            j++;
-//        }
 
-        setTitle("Multi Notes (#)");
+        setTitle("Multi Notes (" + totalNumberOfNotes + ")");
 
     }
 
@@ -89,6 +79,7 @@ public class MainActivity extends AppCompatActivity
         newNote.setBody(sBodyPassBack);
         newNote.setDate(sDatePassBack);
         noteList.add(newNote);
+        totalNumberOfNotes++;
     }
 
     private void loadFile() {
@@ -106,6 +97,7 @@ public class MainActivity extends AppCompatActivity
             while ((line = reader.readLine()) != null) {
                 sb.append(line);
             }
+            Log.d(TAG, "loadFile: " + sb);
 
             JSONObject jsonObject = new JSONObject(sb.toString());
             int iJsonRows = jsonObject.length();
@@ -119,10 +111,13 @@ public class MainActivity extends AppCompatActivity
                 String body = jsonObject.getString("body" + i);
                 Log.d(TAG, "STRING body:" + i + " " + body);
                 String date = jsonObject.getString("date" + i);
+                Log.d(TAG, "STRING date:" + i + " " + date);
+
                 note.setTitle(title);
                 note.setBody(body);
                 note.setDate(date);
                 noteList.add(note);
+                totalNumberOfNotes++;
             }
             //saveNotes() behaves differently whether there already is a JSON file or not
             jsonFilePresent = true;
@@ -266,7 +261,7 @@ public class MainActivity extends AppCompatActivity
                     } else if (i % 3 == 1) {
                         writer.name("body" + noteNumber).value(allData.get(i));
                     } else {
-                        writer.name("date" + noteNumber).value(sDatePassBack);
+                        writer.name("date" + noteNumber).value(allData.get(i));
                         noteNumber++;
                     }
                 }
@@ -274,7 +269,11 @@ public class MainActivity extends AppCompatActivity
             if ((sTitlePassBack != null) && (!hasBeenAdded)) {
                 Log.d(TAG, "passBack: " + sTitlePassBack);
                 writer.name("title" + noteNumber).value(sTitlePassBack);
-                writer.name("body" + noteNumber).value(sBodyPassBack);
+                if (!sBodyPassBack.isEmpty()) {
+                    writer.name("body" + noteNumber).value(sBodyPassBack);
+                } else {
+                    writer.name("body" + noteNumber).value(" ");
+                }
                 writer.name("date" + noteNumber).value(sDatePassBack);
                 hasBeenAdded = true;
             }
