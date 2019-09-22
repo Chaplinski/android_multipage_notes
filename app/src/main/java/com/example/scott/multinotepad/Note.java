@@ -31,11 +31,15 @@ public class Note {
     public String getDate() { return date; }
 
     public void setDate(String newDate){
+        this.date = newDate;
+    }
+
+    public String getCurrentDate(){
         DateFormat df = new SimpleDateFormat("EEE MMM d, hh:mm a");
         Date dateobj = new Date();
         String dateString = df.format(dateobj);
         Log.d("scooter", "setDate: " + dateString);
-        this.date = dateString;
+        return dateString;
     }
 
     public String toString() {

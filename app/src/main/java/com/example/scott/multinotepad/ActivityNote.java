@@ -69,15 +69,20 @@ public class ActivityNote extends AppCompatActivity {
 
         switch (item.getItemId()) {
             case R.id.saveNote:
-//                aValues[0] = title.getText().toString();
-//                aValues[1] = body.getText().toString();
-                String sTitleText = title.getText().toString();
-                String sBodyText = body.getText().toString();
-
-                Toast.makeText(this, "You have saved your note", Toast.LENGTH_SHORT).show();
                 Intent intentNoteCreation = new Intent(this, MainActivity.class);
-                intentNoteCreation.putExtra("Title Passback", sTitleText);
-                intentNoteCreation.putExtra("Body Passback", sBodyText);
+                String sTitleText = title.getText().toString();
+                Log.d(TAG, "onOptionsItemSelected: " + sTitleText);
+                //if the title is blank then do not save note
+                if (!sTitleText.isEmpty()) {
+                    String sBodyText = body.getText().toString();
+                    String sDate = note.getCurrentDate();
+//                    Toast.makeText(this, "You have saved your note", Toast.LENGTH_SHORT).show();
+                    intentNoteCreation.putExtra("Title Passback", sTitleText);
+                    intentNoteCreation.putExtra("Body Passback", sBodyText);
+                    intentNoteCreation.putExtra("Date Passback", sDate);
+                } else {
+                    Toast.makeText(this, "Untitled notes are not saved", Toast.LENGTH_SHORT).show();
+                }
 
                 startActivity(intentNoteCreation);
                 return true;

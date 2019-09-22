@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.DialogTitle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.JsonWriter;
@@ -12,11 +11,9 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -25,10 +22,7 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.io.StringWriter;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity
@@ -43,12 +37,12 @@ public class MainActivity extends AppCompatActivity
     private String sTitlePassBack;
     private String sBodyPassBack;
     private String sDatePassBack;
+    private boolean jsonFilePresent = false;
+    private boolean hasBeenAdded = false;
 
 
     private TextView noteTitle;
     private TextView noteBody;
-//    private TextView userText;
-//    private TextView textView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,15 +83,16 @@ public class MainActivity extends AppCompatActivity
     private void displayNewListItem(Intent intent) {
         sTitlePassBack = intent.getStringExtra("Title Passback");
         sBodyPassBack = intent.getStringExtra("Body Passback");
+        sDatePassBack = intent.getStringExtra("Date Passback");
         Note newNote = new Note();
         newNote.setTitle(sTitlePassBack);
         newNote.setBody(sBodyPassBack);
-        newNote.setDate("");
-        sDatePassBack = newNote.getDate();
+        newNote.setDate(sDatePassBack);
         noteList.add(newNote);
     }
 
     private void loadFile() {
+
 
 //        Log.d(TAG, "loadFile: Loading JSON File");
         try {
@@ -129,6 +124,8 @@ public class MainActivity extends AppCompatActivity
                 note.setDate(date);
                 noteList.add(note);
             }
+            //saveNotes() behaves differently whether there already is a JSON file or not
+            jsonFilePresent = true;
 
         } catch (FileNotFoundException e) {
             Toast.makeText(this, getString(R.string.no_file), Toast.LENGTH_SHORT).show();
@@ -174,16 +171,12 @@ public class MainActivity extends AppCompatActivity
 
         switch (item.getItemId()) {
             case R.id.menuCreateANote:
-                //Toast.makeText(this, "You want to create a note", Toast.LENGTH_SHORT).show();
                 Intent intentNoteCreation = new Intent(MainActivity.this, ActivityNote.class);
-                intentNoteCreation.putExtra("Note Title", "Note title from other activity");
-                intentNoteCreation.putExtra("Note Body", "Note BOOOOOOODY from other activity");
                 startActivityForResult(intentNoteCreation, SAVE_NOTE_REQUEST_CODE);
                 return true;
             case R.id.menuViewAppDetails:
                 Toast.makeText(this, "You want to read about the app", Toast.LENGTH_SHORT).show();
                 Intent intentAppDetails = new Intent(MainActivity.this, ActivityB.class);
-                intentAppDetails.putExtra("Activity Title", "My Cool Activity");
                 startActivity(intentAppDetails);
                 return true;
             default:
@@ -196,8 +189,6 @@ public class MainActivity extends AppCompatActivity
         if (requestCode == SAVE_NOTE_REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
                 String text = data.getStringExtra("USER_TEXT_IDENTIFIER");
-//                userText.setText(text);
-
                 Log.d(TAG, "onActivityResult: User Text: " + text);
             } else {
                 Log.d(TAG, "onActivityResult: result Code: " + resultCode);
@@ -217,39 +208,44 @@ public class MainActivity extends AppCompatActivity
     private void saveNotes() {
         Log.d(TAG, "saveNote: Saving JSON File");
         try {
-            // read JSON file
-            InputStream is = getApplicationContext().
-                    openFileInput(getString(R.string.file_name));
-            BufferedReader reader = new BufferedReader(new InputStreamReader(is, "UTF-8"));
             ArrayList<String> allData = new ArrayList<>();
+            // read JSON file
+            if (jsonFilePresent) {
+                Log.d(TAG, "saveNotes: JSON file present");
+                InputStream is = getApplicationContext().
+                        openFileInput(getString(R.string.file_name));
+                BufferedReader reader = new BufferedReader(new InputStreamReader(is, "UTF-8"));
+
 
 //            iterate over JSON file
-            String line;
-            int lineNumber = 0;
-            while ((line = reader.readLine()) != null) {
+                String line;
+                int lineNumber = 0;
+                while ((line = reader.readLine()) != null) {
 
-                if(!line.contains("{") && !line.contains("}")) {
+                    if (!line.contains("{") && !line.contains("}")) {
 
-                    String result;
-                    String line2 = line.substring(line.indexOf(": \"")+1);
-                    String line3 = line2.substring(line2.indexOf("\"")+1);
-                    lineNumber++;
-//                    Log.d(TAG, "fromJSON 1: " + line);
-//                    Log.d(TAG, "fromJSON 2: " + line2);
-//                    Log.d(TAG, "fromJSON 3: " + line3);
-                    //when removing quotes from date a different expression is needed
-                    if (lineNumber % 3 == 0){
-                        result = line3.split("\"")[0];
-//                        Log.d(TAG, "fromJSON final: " + result);
-                    } else {
-                        result = line3.split("\",")[0];
-//                        Log.d(TAG, "fromJSON final: " + result);
+                        String result;
+                        String line2 = line.substring(line.indexOf(": \"") + 1);
+                        String line3 = line2.substring(line2.indexOf("\"") + 1);
+                        lineNumber++;
+                    Log.d(TAG, "fromJSON 1: " + line);
+                    Log.d(TAG, "fromJSON 2: " + line2);
+                    Log.d(TAG, "fromJSON 3: " + line3);
+                        //when removing quotes from date a different expression is needed
+                        if (lineNumber % 3 == 0) {
+                            result = line3.split("\"")[0];
+                        } else {
+                            result = line3.split("\",")[0];
+                        }
+                        allData.add(result);
+                    Log.d(TAG, "fromJSON: " + result);
                     }
-                    allData.add(result);
-//                    Log.d(TAG, "fromJSON: " + result);
                 }
+                Log.d(TAG, "fromJSON allData: " + allData);
+            } else {
+                Log.d(TAG, "saveNotes: JSON file NOT");
             }
-            Log.d(TAG, "fromJSON allData: " + allData);
+            
             //now we have all of the data that was held in the JSON file in an ArrayList
 
 
@@ -263,37 +259,28 @@ public class MainActivity extends AppCompatActivity
             //iterate over ArrayList
 
             int noteNumber = 0;
-            for (int i = 0; i < allData.size(); i++){
-                if(i % 3 == 0){
-                    writer.name("title" + noteNumber).value(allData.get(i));
-                } else if (i % 3 == 1){
-                    writer.name("body" + noteNumber).value(allData.get(i));
-                } else {
-                    writer.name("date" + noteNumber).value(sDatePassBack);
-                    noteNumber++;
+            if (jsonFilePresent) {
+                for (int i = 0; i < allData.size(); i++) {
+                    if (i % 3 == 0) {
+                        writer.name("title" + noteNumber).value(allData.get(i));
+                    } else if (i % 3 == 1) {
+                        writer.name("body" + noteNumber).value(allData.get(i));
+                    } else {
+                        writer.name("date" + noteNumber).value(sDatePassBack);
+                        noteNumber++;
+                    }
                 }
             }
-            if (sTitlePassBack != null) {
+            if ((sTitlePassBack != null) && (!hasBeenAdded)) {
                 Log.d(TAG, "passBack: " + sTitlePassBack);
                 writer.name("title" + noteNumber).value(sTitlePassBack);
                 writer.name("body" + noteNumber).value(sBodyPassBack);
-                writer.name("date" + noteNumber).value("writer date - most recently added");
+                writer.name("date" + noteNumber).value(sDatePassBack);
+                hasBeenAdded = true;
             }
 
             writer.endObject();
             writer.close();
-
-//            StringWriter sw = new StringWriter();
-//            writer = new JsonWriter(sw);
-//            writer.setIndent("  ");
-//            writer.beginObject();
-//            writer.name("title").value(sTitlePassBack);
-//            writer.name("body").value(sBodyPassBack);
-//            writer.name("date").value(sDatePassBack);
-//            writer.endObject();
-//            writer.close();
-//            Log.d(TAG, "saveProduct: JSON:\n" + sw.toString());
-
 
             Toast.makeText(this, getString(R.string.saved), Toast.LENGTH_SHORT).show();
         } catch (Exception e) {
