@@ -51,7 +51,7 @@ public class ActivityNote extends AppCompatActivity {
 
         Intent intent = getIntent();
         if (intent.hasExtra("Note Title")) {
-            Toast.makeText(this, "I am in the note title", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(this, "I am in the note title", Toast.LENGTH_SHORT).show();
             sIncomingTitle = intent.getStringExtra("Note Title");
             Log.d(TAG, "noteTitle: " + sIncomingTitle);
             title.setText(sIncomingTitle);

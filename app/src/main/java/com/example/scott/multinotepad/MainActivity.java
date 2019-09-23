@@ -163,6 +163,7 @@ public class MainActivity extends AppCompatActivity
         String thisTitle = name.getText().toString();
         Toast.makeText(this, thisTitle, Toast.LENGTH_SHORT).show();
         saveNotes(true, thisTitle);
+        mAdapter.removeItem(0);
         return false;
     }
 
@@ -181,7 +182,7 @@ public class MainActivity extends AppCompatActivity
                 startActivityForResult(intentNoteCreation, SAVE_NOTE_REQUEST_CODE);
                 return true;
             case R.id.menuViewAppDetails:
-                Toast.makeText(this, "You want to read about the app", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(this, "You want to read about the app", Toast.LENGTH_SHORT).show();
                 Intent intentAppDetails = new Intent(MainActivity.this, ActivityB.class);
                 startActivity(intentAppDetails);
                 return true;
