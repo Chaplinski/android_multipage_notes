@@ -148,6 +148,7 @@ public class ActivityNote extends AppCompatActivity {
                         })
                         .show();
             } else {
+                Toast.makeText(this, "Untitled notes are not saved", Toast.LENGTH_SHORT).show();
                 super.onBackPressed();
             }
         } else {

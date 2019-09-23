@@ -304,7 +304,7 @@ public class MainActivity extends AppCompatActivity
             writer.endObject();
             writer.close();
 
-            Toast.makeText(this, getString(R.string.saved), Toast.LENGTH_SHORT).show();
+            //Toast.makeText(this, getString(R.string.saved), Toast.LENGTH_SHORT).show();
         } catch (Exception e) {
             e.getStackTrace();
         }
