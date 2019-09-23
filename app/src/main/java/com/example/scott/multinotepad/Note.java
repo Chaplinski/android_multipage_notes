@@ -52,7 +52,7 @@ public class Note {
         Long lTimestamp = Long.parseLong(timestamp);
         try{
             Calendar calendar = Calendar.getInstance();
-            TimeZone tz = TimeZone.getDefault();
+            TimeZone tz = TimeZone.getTimeZone("CST");
             calendar.setTimeInMillis(lTimestamp * 1000);
             calendar.add(Calendar.MILLISECOND, tz.getOffset(calendar.getTimeInMillis()));
             SimpleDateFormat sdf = new SimpleDateFormat("EEE MMM d, hh:mm a");

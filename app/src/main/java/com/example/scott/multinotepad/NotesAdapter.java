@@ -44,11 +44,17 @@ public class NotesAdapter extends RecyclerView.Adapter<MyViewHolder> {
         holder.name.setText(note.getTitle());
         holder.body.setText(note.getBody());
         holder.dateTime.setText(note.getDate());
+
     }
 
     @Override
     public int getItemCount() {
         return noteList.size();
+    }
+
+    public void removeItem(int position) {
+        noteList.remove(position);
+        notifyItemRemoved(position);
     }
 
 }

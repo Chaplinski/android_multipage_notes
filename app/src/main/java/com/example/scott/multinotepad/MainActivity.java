@@ -39,12 +39,6 @@ public class MainActivity extends AppCompatActivity
     private String sDatePassBack;
     private boolean jsonFilePresent = false;
     private boolean hasBeenAdded = false;
-    private int totalNumberOfNotes = 0;
-    ArrayList newList = new ArrayList();
-
-
-    private TextView noteTitle;
-    private TextView noteBody;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,7 +61,7 @@ public class MainActivity extends AppCompatActivity
 
         this.loadFile();
 
-        setTitle("Multi Notes (" + totalNumberOfNotes + ")");
+        setTitle("Multi Notes (" + noteList.size() + ")");
 
     }
 
@@ -75,13 +69,15 @@ public class MainActivity extends AppCompatActivity
         sTitlePassBack = intent.getStringExtra("Title Passback");
         sBodyPassBack = intent.getStringExtra("Body Passback");
         sDatePassBack = intent.getStringExtra("Date Passback");
+       // String sOriginalTitle = intent.getStringExtra("Original Title");
+
+
         Note newNote = new Note();
         newNote.setTitle(sTitlePassBack);
         newNote.setBody(sBodyPassBack);
         String actualDate = newNote.getDateCurrentTimeZone(sDatePassBack);
         newNote.setDate(actualDate);
         noteList.add(newNote);
-        totalNumberOfNotes++;
     }
 
     private void loadFile() {
@@ -120,7 +116,6 @@ public class MainActivity extends AppCompatActivity
                 String actualTime = note.getDateCurrentTimeZone(date);
                 note.setDate(actualTime);
                 noteList.add(note);
-                totalNumberOfNotes++;
             }
             //saveNotes() behaves differently whether there already is a JSON file or not
             jsonFilePresent = true;
@@ -138,9 +133,9 @@ public class MainActivity extends AppCompatActivity
 //        int pos = recyclerView.getChildLayoutPosition(v);
 //        Note m = noteList.get(pos);
         TextView name = v.findViewById(R.id.name);
-        String thisTitle = name. getText().toString();
+        String thisTitle = name.getText().toString();
         TextView body = v.findViewById(R.id.body) ;
-        String thisBody = body. getText().toString();
+        String thisBody = body.getText().toString();
 
         //Toast.makeText(v.getContext(), "SHORT " + m.toString(), Toast.LENGTH_SHORT).show();
         Intent intentNoteCreation = new Intent(MainActivity.this, ActivityNote.class);
@@ -155,9 +150,9 @@ public class MainActivity extends AppCompatActivity
     public boolean onLongClick(View v) {  // long click listener called by ViewHolder long clicks
         // use this method to delete a note
         TextView name = v.findViewById(R.id.name);
-        String thisTitle = name. getText().toString();
+        String thisTitle = name.getText().toString();
         Toast.makeText(this, thisTitle, Toast.LENGTH_SHORT).show();
-
+        saveNotes(true, thisTitle);
         return false;
     }
 
@@ -202,11 +197,11 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     protected void onPause() {
-        saveNotes();
+        saveNotes(false, "");
         super.onPause();
     }
 
-    private void saveNotes() {
+    private void saveNotes(boolean deleteFile, String thisTitle) {
         Log.d(TAG, "saveNote: Saving JSON File");
         try {
             ArrayList<String> allData = new ArrayList<>();
@@ -243,6 +238,13 @@ public class MainActivity extends AppCompatActivity
                     }
                 }
                 Log.d(TAG, "fromJSON allData: " + allData);
+
+                if(deleteFile){
+                    int indexOfNoteToDelete = allData.indexOf(thisTitle);
+                    allData.remove(indexOfNoteToDelete + 2);
+                    allData.remove(indexOfNoteToDelete + 1);
+                    allData.remove(indexOfNoteToDelete);
+                }
             } else {
                 Log.d(TAG, "saveNotes: JSON file NOT");
             }

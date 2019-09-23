@@ -36,6 +36,9 @@ public class ActivityNote extends AppCompatActivity {
     private EditText body;
     private Note note = new Note();
     private static final String TAG = "ActivityNote";
+    private String sIncomingTitle = "";
+    private String sIncomingBody = "";
+
 
 
     @Override
@@ -49,11 +52,11 @@ public class ActivityNote extends AppCompatActivity {
         Intent intent = getIntent();
         if (intent.hasExtra("Note Title")) {
             Toast.makeText(this, "I am in the note title", Toast.LENGTH_SHORT).show();
-            String sTitle = intent.getStringExtra("Note Title");
-            Log.d(TAG, "noteTitle: " + sTitle);
-            title.setText(sTitle);
-            String sBody = intent.getStringExtra("Note Body");
-            body.setText(sBody);
+            sIncomingTitle = intent.getStringExtra("Note Title");
+            Log.d(TAG, "noteTitle: " + sIncomingTitle);
+            title.setText(sIncomingTitle);
+            sIncomingBody = intent.getStringExtra("Note Body");
+            body.setText(sIncomingBody);
         }
 
     }
@@ -71,19 +74,22 @@ public class ActivityNote extends AppCompatActivity {
             case R.id.saveNote:
                 Intent intentNoteCreation = new Intent(this, MainActivity.class);
                 String sTitleText = title.getText().toString();
+                String sBodyText = body.getText().toString();
                 Log.d(TAG, "onOptionsItemSelected: " + sTitleText);
-                //if the title is blank then do not save note
-                if (!sTitleText.isEmpty()) {
-                    String sBodyText = body.getText().toString();
-                    String sDate = note.getCurrentDate();
-//                    Toast.makeText(this, "You have saved your note", Toast.LENGTH_SHORT).show();
-                    intentNoteCreation.putExtra("Title Passback", sTitleText);
-                    intentNoteCreation.putExtra("Body Passback", sBodyText);
-                    intentNoteCreation.putExtra("Date Passback", sDate);
-                } else {
-                    Toast.makeText(this, "Untitled notes are not saved", Toast.LENGTH_SHORT).show();
-                }
 
+                if((sIncomingTitle.compareTo(sTitleText) != 0) || (sIncomingBody.compareTo(sBodyText) != 0)) {
+                    if (!sTitleText.isEmpty()) {
+                    //if the title is blank then do not save note
+
+                        String sDate = note.getCurrentDate();
+//                    Toast.makeText(this, "You have saved your note", Toast.LENGTH_SHORT).show();
+                        intentNoteCreation.putExtra("Title Passback", sTitleText);
+                        intentNoteCreation.putExtra("Body Passback", sBodyText);
+                        intentNoteCreation.putExtra("Date Passback", sDate);
+                    } else {
+                        Toast.makeText(this, "Untitled notes are not saved", Toast.LENGTH_SHORT).show();
+                    }
+                }
                 startActivity(intentNoteCreation);
                 return true;
             default:
@@ -93,49 +99,10 @@ public class ActivityNote extends AppCompatActivity {
 
     @Override
     protected void onResume() {
-//        note = loadFile();  // Load the JSON containing the product data - if it exists
-//        if (note != null) { // null means no file was loaded
-////            title.setText(note.getTitle());
-////            body.setText(note.getBody());
-//        }
+
         super.onResume();
     }
 
-//    private Note loadFile() {
-//
-//        Log.d(TAG, "loadFile: Loading JSON File");
-//        note = new Note();
-//        try {
-//            InputStream is = getApplicationContext().
-//                    openFileInput(getString(R.string.file_name));
-//
-//            BufferedReader reader = new BufferedReader(new InputStreamReader(is, "UTF-8"));
-//
-//            StringBuilder sb = new StringBuilder();
-//            String line;
-//            while ((line = reader.readLine()) != null) {
-//                sb.append(line);
-//            }
-//
-//            JSONObject jsonObject = new JSONObject(sb.toString());
-//            String title = jsonObject.getString("title");
-//            String body = jsonObject.getString("body");
-//            String date = jsonObject.getString("date");
-//            note.setTitle(title);
-//            note.setBody(body);
-//            note.setDate(date);
-//            Log.d(TAG, "loadFile title: " + title);
-//            Log.d(TAG, "loadFile body: " + body);
-//            Log.d(TAG, "loadFile date: " + date);
-//
-//
-//        } catch (FileNotFoundException e) {
-//            Toast.makeText(this, getString(R.string.no_file), Toast.LENGTH_SHORT).show();
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//        return note;
-//    }
 
 
     @Override
@@ -149,37 +116,38 @@ public class ActivityNote extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        String titleText = title.getText().toString();
-        if (titleText.length() > 0) {
-            new AlertDialog.Builder(this)
-                    .setIcon(android.R.drawable.ic_dialog_alert)
-                    .setTitle("Your note is not saved!")
-                    .setMessage("Save note \"" + titleText + "\"?")
-                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            Intent intentNoteCreation = new Intent(ActivityNote.this, MainActivity.class);
-                            String sTitleText = title.getText().toString();
-                            String sBodyText = body.getText().toString();
-                            String sDate = note.getCurrentDate();
-//                    Toast.makeText(this, "You have saved your note", Toast.LENGTH_SHORT).show();
-                            intentNoteCreation.putExtra("Title Passback", sTitleText);
-                            intentNoteCreation.putExtra("Body Passback", sBodyText);
-                            intentNoteCreation.putExtra("Date Passback", sDate);
-                            startActivity(intentNoteCreation);
-                        }
+        final String sTitleText = title.getText().toString();
+        final String sBodyText = body.getText().toString();
+        if((sIncomingTitle.compareTo(sTitleText) != 0) || (sIncomingBody.compareTo(sBodyText) != 0)) {
 
-                    })
-                    .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            finish();
-                        }
+            if (sTitleText.length() > 0) {
+                new AlertDialog.Builder(this)
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .setTitle("Your note is not saved!")
+                        .setMessage("Save note \"" + sTitleText + "\"?")
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                Intent intentNoteCreation = new Intent(ActivityNote.this, MainActivity.class);
+                                String sDate = note.getCurrentDate();
+                                intentNoteCreation.putExtra("Title Passback", sTitleText);
+                                intentNoteCreation.putExtra("Body Passback", sBodyText);
+                                intentNoteCreation.putExtra("Date Passback", sDate);
+                                startActivity(intentNoteCreation);
+                            }
 
-                    })
-                    .show();
-        } else {
-            super.onBackPressed();
+                        })
+                        .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                finish();
+                            }
+
+                        })
+                        .show();
+            } else {
+                super.onBackPressed();
+            }
         }
     }
 }
