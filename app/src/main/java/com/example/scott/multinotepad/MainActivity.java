@@ -69,15 +69,20 @@ public class MainActivity extends AppCompatActivity
         sTitlePassBack = intent.getStringExtra("Title Passback");
         sBodyPassBack = intent.getStringExtra("Body Passback");
         sDatePassBack = intent.getStringExtra("Date Passback");
-       // String sOriginalTitle = intent.getStringExtra("Original Title");
+        String sOriginalTitle = intent.getStringExtra("Original Title");
 
+        if (sOriginalTitle != ""){
+            jsonFilePresent = true;
+            saveNotes(true, sOriginalTitle);
 
-        Note newNote = new Note();
-        newNote.setTitle(sTitlePassBack);
-        newNote.setBody(sBodyPassBack);
-        String actualDate = newNote.getDateCurrentTimeZone(sDatePassBack);
-        newNote.setDate(actualDate);
-        noteList.add(newNote);
+        } else {
+            Note newNote = new Note();
+            newNote.setTitle(sTitlePassBack);
+            newNote.setBody(sBodyPassBack);
+            String actualDate = newNote.getDateCurrentTimeZone(sDatePassBack);
+            newNote.setDate(actualDate);
+            noteList.add(newNote);
+        }
     }
 
     private void loadFile() {
@@ -237,14 +242,18 @@ public class MainActivity extends AppCompatActivity
                     Log.d(TAG, "fromJSON: " + result);
                     }
                 }
-                Log.d(TAG, "fromJSON allData: " + allData);
+                Log.d(TAG, "fromJSON allData before deletion: " + allData);
 
                 if(deleteFile){
                     int indexOfNoteToDelete = allData.indexOf(thisTitle);
+                    Log.d(TAG, "fromJSON allData deleted date: " + allData.get(indexOfNoteToDelete +2));
+                    Log.d(TAG, "fromJSON allData deleted body: " + allData.get(indexOfNoteToDelete +1));
+                    Log.d(TAG, "fromJSON allData deleted title: " + allData.get(indexOfNoteToDelete));
                     allData.remove(indexOfNoteToDelete + 2);
                     allData.remove(indexOfNoteToDelete + 1);
                     allData.remove(indexOfNoteToDelete);
                 }
+                Log.d(TAG, "fromJSON allData after deletion: " + allData);
             } else {
                 Log.d(TAG, "saveNotes: JSON file NOT");
             }

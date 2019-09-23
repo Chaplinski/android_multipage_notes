@@ -86,6 +86,7 @@ public class ActivityNote extends AppCompatActivity {
                         intentNoteCreation.putExtra("Title Passback", sTitleText);
                         intentNoteCreation.putExtra("Body Passback", sBodyText);
                         intentNoteCreation.putExtra("Date Passback", sDate);
+                        intentNoteCreation.putExtra("Original Title", sIncomingTitle);
                     } else {
                         Toast.makeText(this, "Untitled notes are not saved", Toast.LENGTH_SHORT).show();
                     }
@@ -133,6 +134,7 @@ public class ActivityNote extends AppCompatActivity {
                                 intentNoteCreation.putExtra("Title Passback", sTitleText);
                                 intentNoteCreation.putExtra("Body Passback", sBodyText);
                                 intentNoteCreation.putExtra("Date Passback", sDate);
+                                intentNoteCreation.putExtra("Original Title", sIncomingTitle);
                                 startActivity(intentNoteCreation);
                             }
 
