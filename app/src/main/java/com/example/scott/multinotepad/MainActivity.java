@@ -70,12 +70,16 @@ public class MainActivity extends AppCompatActivity
         sBodyPassBack = intent.getStringExtra("Body Passback");
         sDatePassBack = intent.getStringExtra("Date Passback");
         String sOriginalTitle = intent.getStringExtra("Original Title");
+        Log.d(TAG, "displayNewListItem: " + sOriginalTitle);
+        if (!sOriginalTitle.isEmpty()){
+            Log.d(TAG, "displayNewListItem: in the if");
 
-        if (sOriginalTitle != ""){
             jsonFilePresent = true;
             saveNotes(true, sOriginalTitle);
 
         } else {
+            Log.d(TAG, "displayNewListItem: in the else");
+            
             Note newNote = new Note();
             newNote.setTitle(sTitlePassBack);
             newNote.setBody(sBodyPassBack);
@@ -83,6 +87,7 @@ public class MainActivity extends AppCompatActivity
             newNote.setDate(actualDate);
             noteList.add(newNote);
         }
+
     }
 
     private void loadFile() {
@@ -303,6 +308,19 @@ public class MainActivity extends AppCompatActivity
         } catch (Exception e) {
             e.getStackTrace();
         }
+    }
+
+    private String stringCutToEighty(String incoming){
+        Log.d(TAG, "stringCutToEighty: string length - " + incoming.length());
+
+        if (incoming.length() > 80) {
+            Log.d(TAG, "stringCutToEighty: incoming - " + incoming);
+            String outgoing = incoming.substring(0, 80);
+            Log.d(TAG, "stringCutToEighty: ougoing - " + outgoing);
+            outgoing = outgoing + "...";
+            return outgoing;
+        }
+        return incoming;
     }
 
 }

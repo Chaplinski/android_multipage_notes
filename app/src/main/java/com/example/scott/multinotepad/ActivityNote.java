@@ -150,6 +150,8 @@ public class ActivityNote extends AppCompatActivity {
             } else {
                 super.onBackPressed();
             }
+        } else {
+            super.onBackPressed();
         }
     }
 }
