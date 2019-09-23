@@ -43,6 +43,8 @@ public class NotesAdapter extends RecyclerView.Adapter<MyViewHolder> {
 
         holder.name.setText(note.getTitle());
         holder.body.setText(note.getBody());
+        String cutBody = stringCutToEighty(note.getBody());
+        holder.bodyTruncated.setText(cutBody);
         holder.dateTime.setText(note.getDate());
 
     }
@@ -55,6 +57,19 @@ public class NotesAdapter extends RecyclerView.Adapter<MyViewHolder> {
     public void removeItem(int position) {
         noteList.remove(position);
         notifyItemRemoved(position);
+    }
+
+    private String stringCutToEighty(String incoming){
+        Log.d(TAG, "stringCutToEighty: string length - " + incoming.length());
+
+        if (incoming.length() > 80) {
+            Log.d(TAG, "stringCutToEighty: incoming - " + incoming);
+            String outgoing = incoming.substring(0, 80);
+            Log.d(TAG, "stringCutToEighty: ougoing - " + outgoing);
+            outgoing = outgoing + "...";
+            return outgoing;
+        }
+        return incoming;
     }
 
 }

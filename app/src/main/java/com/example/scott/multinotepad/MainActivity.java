@@ -79,7 +79,7 @@ public class MainActivity extends AppCompatActivity
 
         } else {
             Log.d(TAG, "displayNewListItem: in the else");
-            
+
             Note newNote = new Note();
             newNote.setTitle(sTitlePassBack);
             newNote.setBody(sBodyPassBack);

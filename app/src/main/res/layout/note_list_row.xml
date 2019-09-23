@@ -49,6 +49,19 @@
         android:textAlignment="textStart"
         android:textColor="@color/year"
         android:textSize="16sp"
+        android:visibility="gone"
+        tools:text="Department" />
+
+    <TextView
+        android:id="@+id/bodyTruncated"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:ellipsize="end"
+        android:maxLines="2"
+        android:scrollHorizontally="true"
+        android:textAlignment="textStart"
+        android:textColor="@color/year"
+        android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/dateTime"
