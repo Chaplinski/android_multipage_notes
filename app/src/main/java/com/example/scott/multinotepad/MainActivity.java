@@ -161,9 +161,9 @@ public class MainActivity extends AppCompatActivity
         // use this method to delete a note
         TextView name = v.findViewById(R.id.name);
         String thisTitle = name.getText().toString();
-        Toast.makeText(this, thisTitle, Toast.LENGTH_SHORT).show();
         saveNotes(true, thisTitle);
-        mAdapter.removeItem(0);
+        int position = recyclerView.getChildLayoutPosition(v);
+        mAdapter.removeItem(position);
         return false;
     }
 
