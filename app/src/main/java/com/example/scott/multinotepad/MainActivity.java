@@ -1,7 +1,9 @@
 package com.example.scott.multinotepad;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -159,11 +161,29 @@ public class MainActivity extends AppCompatActivity
     @Override
     public boolean onLongClick(View v) {  // long click listener called by ViewHolder long clicks
         // use this method to delete a note
-        TextView name = v.findViewById(R.id.name);
-        String thisTitle = name.getText().toString();
-        saveNotes(true, thisTitle);
-        int position = recyclerView.getChildLayoutPosition(v);
-        mAdapter.removeItem(position);
+        final TextView name = v.findViewById(R.id.name);
+        final String thisTitle = name.getText().toString();
+        final int position = recyclerView.getChildLayoutPosition(v);
+
+        new AlertDialog.Builder(this)
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .setMessage("Delete note \"" + thisTitle + "\"?")
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        saveNotes(true, thisTitle);
+                        mAdapter.removeItem(position);
+                    }
+
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        //remains empty
+                    }
+
+                })
+                .show();
         return false;
     }
 
