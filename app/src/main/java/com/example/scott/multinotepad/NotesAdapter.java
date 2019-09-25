@@ -24,7 +24,6 @@ public class NotesAdapter extends RecyclerView.Adapter<MyViewHolder> {
     @NonNull
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull final ViewGroup parent, int viewType) {
-        Log.d(TAG, "onCreateViewHolder: MAKING NEW MyViewHolder");
 
         View itemView = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.note_list_row, parent, false);
@@ -37,11 +36,10 @@ public class NotesAdapter extends RecyclerView.Adapter<MyViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-        Log.d(TAG, "onBindViewHolder: FILLING VIEW HOLDER Note " + position);
-
         Note note = noteList.get(position);
-
         holder.name.setText(note.getTitle());
+        String cutName = stringCutToEighty(note.getTitle());
+        holder.nameTruncated.setText(cutName);
         holder.body.setText(note.getBody());
         String cutBody = stringCutToEighty(note.getBody());
         holder.bodyTruncated.setText(cutBody);
@@ -60,16 +58,11 @@ public class NotesAdapter extends RecyclerView.Adapter<MyViewHolder> {
     }
 
     private String stringCutToEighty(String incoming){
-        Log.d(TAG, "stringCutToEighty: string length - " + incoming.length());
-
         if (incoming.length() > 80) {
-            Log.d(TAG, "stringCutToEighty: incoming - " + incoming);
             String outgoing = incoming.substring(0, 80);
-            Log.d(TAG, "stringCutToEighty: ougoing - " + outgoing);
             outgoing = outgoing + "...";
             return outgoing;
         }
         return incoming;
     }
-
 }

@@ -46,25 +46,16 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-//        title = findViewById(R.id.textTitle);
-//        body = findViewById(R.id.textBody);
         recyclerView = findViewById(R.id.recycler);
-
         mAdapter = new NotesAdapter(noteList, this);
-
         recyclerView.setAdapter(mAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-
         Intent intent = getIntent();
-
         if (intent.hasExtra("Title Passback")) {
             displayNewListItem(intent);
         }
-
         this.loadFile();
-
         setTitle("Multi Notes (" + noteList.size() + ")");
-
     }
 
     private void displayNewListItem(Intent intent) {
@@ -93,9 +84,6 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void loadFile() {
-
-
-//        Log.d(TAG, "loadFile: Loading JSON File");
         try {
             InputStream is = getApplicationContext().
                     openFileInput(getString(R.string.file_name));
@@ -112,7 +100,6 @@ public class MainActivity extends AppCompatActivity
             JSONObject jsonObject = new JSONObject(sb.toString());
             int iJsonRows = jsonObject.length();
             int iSavedObjects = iJsonRows/3;
-            Log.d(TAG, "JSON number: " + iSavedObjects);
 
             for (int i = 0; i < iSavedObjects; i++) {
                 Note note = new Note();
@@ -133,7 +120,7 @@ public class MainActivity extends AppCompatActivity
             jsonFilePresent = true;
 
         } catch (FileNotFoundException e) {
-            Toast.makeText(this, getString(R.string.no_file), Toast.LENGTH_SHORT).show();
+//            Toast.makeText(this, getString(R.string.no_file), Toast.LENGTH_SHORT).show();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -142,14 +129,11 @@ public class MainActivity extends AppCompatActivity
     // From OnClickListener
     @Override
     public void onClick(View v) {  // click listener called by ViewHolder clicks
-//        int pos = recyclerView.getChildLayoutPosition(v);
-//        Note m = noteList.get(pos);
         TextView name = v.findViewById(R.id.name);
         String thisTitle = name.getText().toString();
         TextView body = v.findViewById(R.id.body) ;
         String thisBody = body.getText().toString();
 
-        //Toast.makeText(v.getContext(), "SHORT " + m.toString(), Toast.LENGTH_SHORT).show();
         Intent intentNoteCreation = new Intent(MainActivity.this, ActivityNote.class);
         intentNoteCreation.putExtra("Note Title", thisTitle);
         intentNoteCreation.putExtra("Note Body", thisBody);
@@ -195,7 +179,6 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-
         switch (item.getItemId()) {
             case R.id.menuCreateANote:
                 Intent intentNoteCreation = new Intent(MainActivity.this, ActivityNote.class);
@@ -233,31 +216,23 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void saveNotes(boolean deleteFile, String thisTitle) {
-        Log.d(TAG, "saveNote: Saving JSON File");
         try {
             ArrayList<String> allData = new ArrayList<>();
             // read JSON file
             if (jsonFilePresent) {
-                Log.d(TAG, "saveNotes: JSON file present");
                 InputStream is = getApplicationContext().
                         openFileInput(getString(R.string.file_name));
                 BufferedReader reader = new BufferedReader(new InputStreamReader(is, "UTF-8"));
-
 
 //            iterate over JSON file
                 String line;
                 int lineNumber = 0;
                 while ((line = reader.readLine()) != null) {
-
                     if (!line.contains("{") && !line.contains("}")) {
-
                         String result;
                         String line2 = line.substring(line.indexOf(": \"") + 1);
                         String line3 = line2.substring(line2.indexOf("\"") + 1);
                         lineNumber++;
-                    Log.d(TAG, "fromJSON 1: " + line);
-                    Log.d(TAG, "fromJSON 2: " + line2);
-                    Log.d(TAG, "fromJSON 3: " + line3);
                         //when removing quotes from date a different expression is needed
                         if (lineNumber % 3 == 0) {
                             result = line3.split("\"")[0];
@@ -265,28 +240,19 @@ public class MainActivity extends AppCompatActivity
                             result = line3.split("\",")[0];
                         }
                         allData.add(result);
-                    Log.d(TAG, "fromJSON: " + result);
                     }
                 }
-                Log.d(TAG, "fromJSON allData before deletion: " + allData);
 
                 if(deleteFile){
                     int indexOfNoteToDelete = allData.indexOf(thisTitle);
-                    Log.d(TAG, "fromJSON allData deleted date: " + allData.get(indexOfNoteToDelete +2));
-                    Log.d(TAG, "fromJSON allData deleted body: " + allData.get(indexOfNoteToDelete +1));
-                    Log.d(TAG, "fromJSON allData deleted title: " + allData.get(indexOfNoteToDelete));
                     allData.remove(indexOfNoteToDelete + 2);
                     allData.remove(indexOfNoteToDelete + 1);
                     allData.remove(indexOfNoteToDelete);
                 }
-                Log.d(TAG, "fromJSON allData after deletion: " + allData);
             } else {
-                Log.d(TAG, "saveNotes: JSON file NOT");
             }
             
             //now we have all of the data that was held in the JSON file in an ArrayList
-
-
             FileOutputStream fos = getApplicationContext().
                     openFileOutput(getString(R.string.file_name), Context.MODE_PRIVATE);
 
@@ -321,27 +287,20 @@ public class MainActivity extends AppCompatActivity
                     }
                 }
             }
-
             writer.endObject();
             writer.close();
-
-            //Toast.makeText(this, getString(R.string.saved), Toast.LENGTH_SHORT).show();
         } catch (Exception e) {
             e.getStackTrace();
         }
     }
 
     private String stringCutToEighty(String incoming){
-        Log.d(TAG, "stringCutToEighty: string length - " + incoming.length());
 
         if (incoming.length() > 80) {
-            Log.d(TAG, "stringCutToEighty: incoming - " + incoming);
             String outgoing = incoming.substring(0, 80);
-            Log.d(TAG, "stringCutToEighty: ougoing - " + outgoing);
             outgoing = outgoing + "...";
             return outgoing;
         }
         return incoming;
     }
-
 }

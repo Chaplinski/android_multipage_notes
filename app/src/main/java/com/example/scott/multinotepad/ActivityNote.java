@@ -39,8 +39,6 @@ public class ActivityNote extends AppCompatActivity {
     private String sIncomingTitle = "";
     private String sIncomingBody = "";
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,14 +49,11 @@ public class ActivityNote extends AppCompatActivity {
 
         Intent intent = getIntent();
         if (intent.hasExtra("Note Title")) {
-            //Toast.makeText(this, "I am in the note title", Toast.LENGTH_SHORT).show();
             sIncomingTitle = intent.getStringExtra("Note Title");
-            Log.d(TAG, "noteTitle: " + sIncomingTitle);
             title.setText(sIncomingTitle);
             sIncomingBody = intent.getStringExtra("Note Body");
             body.setText(sIncomingBody);
         }
-
     }
 
     @Override
@@ -75,14 +70,11 @@ public class ActivityNote extends AppCompatActivity {
                 Intent intentNoteCreation = new Intent(this, MainActivity.class);
                 String sTitleText = title.getText().toString();
                 String sBodyText = body.getText().toString();
-                Log.d(TAG, "onOptionsItemSelected: " + sTitleText);
 
                 if((sIncomingTitle.compareTo(sTitleText) != 0) || (sIncomingBody.compareTo(sBodyText) != 0)) {
                     if (!sTitleText.isEmpty()) {
                     //if the title is blank then do not save note
-
                         String sDate = note.getCurrentDate();
-//                    Toast.makeText(this, "You have saved your note", Toast.LENGTH_SHORT).show();
                         intentNoteCreation.putExtra("Title Passback", sTitleText);
                         intentNoteCreation.putExtra("Body Passback", sBodyText);
                         intentNoteCreation.putExtra("Date Passback", sDate);
@@ -100,18 +92,11 @@ public class ActivityNote extends AppCompatActivity {
 
     @Override
     protected void onResume() {
-
         super.onResume();
     }
 
-
-
     @Override
     protected void onPause() {
-//        note.setTitle(title.getText().toString());
-//        note.setBody(body.getText().toString());
-        //saveNote();
-
         super.onPause();
     }
 
